@@ -1,9 +1,13 @@
 import requests
+import streamlit as st
+import os
 from typing import Dict, Any, Optional, List
 from datetime import datetime, date
+from dotenv import load_dotenv
+load_dotenv()
 
 class LeaveManagementAPI:
-    def __init__(self, base_url: str = "http://127.0.0.1:5000"):
+    def __init__(self, base_url: str = st.secrets.get("API_BASE_URL", os.getenv("API_BASE_URL", "http://127.0.0.1:5000"))):
         self.base_url = base_url.rstrip('/')
         
     def _make_request(self, method: str, endpoint: str, data: Optional[Dict] = None) -> Dict[str, Any]:
@@ -179,32 +183,3 @@ class LeaveManagementUtils:
             "errors": errors,
             "working_days": working_days
         }
-
-# Example usage:
-'''
-utils = LeaveManagementUtils()
-api = utils.api
-
-# Add new employee
-result = api.add_employee(
-    name="John Doe",
-    email="john.doe@company.com",
-    department="Engineering",
-    joining_date=date.today()
-)
-
-# Apply for leave
-result = api.apply_leave(
-    employee_id=1,
-    leave_type="annual",
-    start_date=date(2025, 8, 25),
-    end_date=date(2025, 8, 30),
-    reason="Vacation"
-)
-
-# Get leave balance
-result = api.get_leave_balance(employee_id=1)
-
-# Approve leave request
-result = api.approve_leave(request_id=1, approver_id=2)
-'''
